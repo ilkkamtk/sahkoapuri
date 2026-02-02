@@ -1,10 +1,10 @@
-import e, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import ExampleModel, { ExampleType } from '../models/exampleModel';
 import CustomError from '@/classes/CustomError';
 import { MessageResponse } from '@/types/LocalTypes';
 import { ExampleCreateBody } from '../schemas/exampleSchemas';
 
-const exampleGet = async (req: Request, res: Response, next: NextFunction) => {
+const exampleGet = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     res.send(await ExampleModel.find());
   } catch (error) {
