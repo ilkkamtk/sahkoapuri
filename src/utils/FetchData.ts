@@ -12,7 +12,7 @@ const fetchData = async <T>(
     if (errorJson.message) {
       throw new Error(errorJson.message);
     }
-    throw new Error(`Error ${response.status} occured`);
+    throw new Error(`Error ${response.status} occurred`);
   }
   return json;
 };

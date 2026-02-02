@@ -38,13 +38,14 @@ const login = async (
 
     const token = jwt.sign(tokenContent, process.env.JWT_SECRET);
 
-    // Create safe user object without password
-    const { password: _, ...safeUser } = user as any;
+    // Create safe user object without password using JSON serialization
+    const userObj = JSON.parse(JSON.stringify(user));
+    delete userObj.password;
 
     res.json({
       message: 'Login successful',
       token,
-      user: safeUser,
+      user: userObj,
     });
   } catch (error) {
     next(error);

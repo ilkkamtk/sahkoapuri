@@ -87,9 +87,8 @@ const upload = async (req: Request, res: Response, next: NextFunction) => {
       }
 
       // Convert to Helsinki time and find price
-      const helsinkiTime = DateTime.fromJSDate(dateKey).setZone(
-        'Europe/Helsinki',
-      );
+      const helsinkiTime =
+        DateTime.fromJSDate(dateKey).setZone('Europe/Helsinki');
       const key = `${helsinkiTime.year}-${helsinkiTime.month}-${helsinkiTime.day}-${helsinkiTime.hour}`;
       const hourlyPrices = pricesMap.get(key);
 

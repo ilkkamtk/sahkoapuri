@@ -3,10 +3,10 @@ import UpdateModel from '../models/updateModel';
 import CustomError from '@/classes/CustomError';
 import { MessageResponse } from '@/types/LocalTypes';
 import { PricesQuery, pricesQuerySchema } from '../schemas/pricesSchemas';
-import * as ExcelJS from 'exceljs';
 import { DateTime } from 'luxon';
 import * as fs from 'fs';
 import * as path from 'path';
+import { loadPricesArray } from '@/utils/priceLoader';
 
 const populatePrices = async (
   req: Request,
@@ -39,7 +39,7 @@ const populatePrices = async (
 
       // Save the file
       const filePath = path.join(assetsDir, 'prices.xlsx');
-      fs.writeFileSync(filePath, Buffer.from(buffer));
+      await fs.promises.writeFile(filePath, Buffer.from(buffer));
 
       // Update the model
       await UpdateModel.findOneAndUpdate(
@@ -63,77 +63,27 @@ const getPrices = async (
   try {
     const query = pricesQuerySchema.parse(req.query);
 
-    const startDate = new Date(query.startDate);
-    const endDate = new Date(query.endDate);
+    // Normalize query dates to Helsinki timezone for consistent comparison
+    const startDate = DateTime.fromISO(query.startDate)
+      .setZone('Europe/Helsinki')
+      .toJSDate();
+    const endDate = DateTime.fromISO(query.endDate)
+      .setZone('Europe/Helsinki')
+      .toJSDate();
 
-    // Read the Excel file
     const filePath = path.join(process.cwd(), 'assets', 'prices.xlsx');
     if (!fs.existsSync(filePath)) {
       next(new CustomError('Prices file not found', 404));
       return;
     }
 
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(filePath);
-    const worksheet = workbook.worksheets[0];
+    // Reuse the price loading utility (already handles Helsinki timezone)
+    const allPrices = await loadPricesArray(filePath);
 
-    const prices: { date: Date; price: number }[] = [];
-
-    // Read from row 5 onwards, A5 time, B5 price
-    worksheet.eachRow((row, rowNumber) => {
-      if (rowNumber >= 5) {
-        const timeValue = row.getCell(1).value; // Column A
-        const priceValue = row.getCell(2).value; // Column B
-
-        if (timeValue && typeof priceValue === 'number') {
-          let date: Date | null = null;
-          if (timeValue instanceof Date) {
-            date = timeValue;
-          } else if (typeof timeValue === 'string') {
-            // Try to parse Finnish date format "d.M.yyyy HH:mm"
-            let finnishMatch = timeValue.match(
-              /^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2})$/,
-            );
-            if (finnishMatch) {
-              const [, day, month, year, hour, minute] = finnishMatch;
-              date = new Date(
-                parseInt(year),
-                parseInt(month) - 1,
-                parseInt(day),
-                parseInt(hour),
-                parseInt(minute),
-              );
-            } else {
-              // Try alternative format "HH:mm dd.MM.yyyy"
-              finnishMatch = timeValue.match(
-                /^(\d{1,2}):(\d{2})\s+(\d{1,2})\.(\d{1,2})\.(\d{4})$/,
-              );
-              if (finnishMatch) {
-                const [, hour, minute, day, month, year] = finnishMatch;
-                date = new Date(
-                  parseInt(year),
-                  parseInt(month) - 1,
-                  parseInt(day),
-                  parseInt(hour),
-                  parseInt(minute),
-                );
-              } else {
-                date = new Date(timeValue);
-              }
-            }
-          } else if (typeof timeValue === 'number') {
-            // Excel serial date
-            date = new Date((timeValue - 25569) * 864e5);
-          }
-
-          if (date && !isNaN(date.getTime())) {
-            if (date >= startDate && date <= endDate) {
-              prices.push({ date, price: priceValue });
-            }
-          }
-        }
-      }
-    });
+    // Filter by date range
+    const prices = allPrices.filter(
+      ({ date }) => date >= startDate && date <= endDate,
+    );
 
     res.send(prices);
   } catch (error) {

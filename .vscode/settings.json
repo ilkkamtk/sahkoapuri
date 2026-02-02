@@ -17,6 +17,7 @@
     "/^node -e \"const ExcelJS=require\\('exceljs'\\);const wb=new ExcelJS\\.Workbook\\(\\);wb\\.xlsx\\.readFile\\('tests/check\\.xlsx'\\)\\.then\\(\\(\\)=>\\{const ws=wb\\.worksheets\\[0\\];let sumF=0,countF=0,sumE=0;for\\(let i=5;i<=8764;i\\+\\+\\)\\{const f=ws\\.getRow\\(i\\)\\.getCell\\(6\\)\\.result\\|\\|ws\\.getRow\\(i\\)\\.getCell\\(6\\)\\.value\\|\\|0;const e=ws\\.getRow\\(i\\)\\.getCell\\(5\\)\\.value\\|\\|0;if\\(typeof f==='number'\\)sumF\\+=f,countF\\+\\+;if\\(typeof e==='number'\\)sumE\\+=e;\\}console\\.log\\('SUM\\(F5:F8764\\):',sumF\\);console\\.log\\('COUNT\\(F5:F8764\\):',countF\\);console\\.log\\('SUM\\(E5:E8764\\):',sumE\\);console\\.log\\('AVERAGE\\(F5:F8764\\):',sumF/countF\\);console\\.log\\('SUM\\(F\\)/SUM\\(E\\):',sumF/sumE\\);console\\.log\\('Target avg price: 9\\.757'\\);\\}\\);\"$/": {
       "approve": true,
       "matchCommandLine": true
-    }
+    },
+    "od": true
   }
 }

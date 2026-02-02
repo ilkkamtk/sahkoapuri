@@ -116,20 +116,6 @@ Upload an Excel file (.xlsx) containing electricity consumption data.
 }
 ```
 
-### Update Price Data
-
-**POST** `/api/v1/prices/populate`
-
-Downloads latest price data from porssisahko.net. Updates once per day automatically.
-
-**Response**:
-
-```json
-{
-  "message": "Prices file updated successfully"
-}
-```
-
 ### Get Price Data
 
 **GET** `/api/v1/prices?startDate=2025-01-01T00:00:00Z&endDate=2025-01-02T23:59:59Z`

@@ -7,7 +7,7 @@ export type DateFormat =
 
 export function parseExcelDate(
   value: unknown,
-  format: DateFormat | undefined,
+  format?: DateFormat,
 ): Date | null {
   if (value instanceof Date) return value;
 
@@ -18,22 +18,28 @@ export function parseExcelDate(
 
   if (typeof value !== 'string') return null;
 
-  if (format === 'd.M.yyyy HH:mm') {
+  // Try Finnish format "d.M.yyyy HH:mm" (e.g., 1.2.2024 09:30)
+  if (!format || format === 'd.M.yyyy HH:mm') {
     const match = value.match(
       /^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2})$/,
     );
-    if (!match) return null;
-    const [, day, month, year, hour, minute] = match;
-    return new Date(+year, +month - 1, +day, +hour, +minute);
+    if (match) {
+      const [, day, month, year, hour, minute] = match;
+      return new Date(+year, +month - 1, +day, +hour, +minute);
+    }
+    if (format) return null;
   }
 
-  if (format === 'HH:mm dd.MM.yyyy') {
+  // Try Finnish format "HH:mm dd.MM.yyyy" (e.g., 14:30 01.01.2025)
+  if (!format || format === 'HH:mm dd.MM.yyyy') {
     const match = value.match(
       /^(\d{1,2}):(\d{2})\s+(\d{1,2})\.(\d{1,2})\.(\d{4})$/,
     );
-    if (!match) return null;
-    const [, hour, minute, day, month, year] = match;
-    return new Date(+year, +month - 1, +day, +hour, +minute);
+    if (match) {
+      const [, hour, minute, day, month, year] = match;
+      return new Date(+year, +month - 1, +day, +hour, +minute);
+    }
+    if (format) return null;
   }
 
   // default: ISO / yyyy-MM-dd HH:mm / others

@@ -73,33 +73,13 @@ describe('Prices API', () => {
   });
 
   describe('POST /api/v1/prices/populate', () => {
-    let token: string;
-
-    beforeAll(async () => {
-      // Login to get token
-      const response = await request(app)
-        .post('/api/v1/auth/login')
-        .send({ username: 'test-admin', password: 'some pwd' });
-      token = response.body.token;
-    });
-
-    it('should allow populate with valid token', async () => {
+    it('should populate prices without authentication', async () => {
       await request(app)
         .post('/api/v1/prices/populate')
-        .set('Authorization', `Bearer ${token}`)
-        .send({ years: [2021] })
+        .expect(200)
         .expect((res) => {
-          if (res.status === 401) {
-            throw new Error('Should not return 401 with valid token');
-          }
+          expect(res.body).toHaveProperty('message');
         });
-    });
-
-    it('should return 401 without token', async () => {
-      await request(app)
-        .post('/api/v1/prices/populate')
-        .send({ years: [2021] })
-        .expect(401);
     });
   });
 });

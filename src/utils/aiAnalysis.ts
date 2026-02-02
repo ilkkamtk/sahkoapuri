@@ -39,7 +39,15 @@ If a column is not found, use null for that field.`;
 
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: prompt }],
+    response_format: { type: 'json_object' },
+    messages: [
+      {
+        role: 'system',
+        content:
+          'You are a helpful assistant that only outputs a single valid JSON object and nothing else. Do not include any explanations, markdown, or additional text outside the JSON.',
+      },
+      { role: 'user', content: prompt },
+    ],
   });
 
   const content = completion.choices[0].message.content;
