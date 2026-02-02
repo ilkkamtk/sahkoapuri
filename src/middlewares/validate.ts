@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import { type ZodTypeAny, ZodError } from 'zod';
+import { ZodError, type ZodType } from 'zod';
 import CustomError from '@/classes/CustomError';
 
 const formatZodError = (error: ZodError): string => {
@@ -15,8 +15,8 @@ const formatZodError = (error: ZodError): string => {
   return `Validation error: ${issueMessages.join(', ')}`;
 };
 
-export const validateBody = <Schema extends ZodTypeAny>(
-  schema: Schema,
+export const validateBody = <Output, Input>(
+  schema: ZodType<Output, Input>,
 ): RequestHandler => {
   return (req, _res, next) => {
     const result = schema.safeParse(req.body);
@@ -24,13 +24,13 @@ export const validateBody = <Schema extends ZodTypeAny>(
       return next(new CustomError(formatZodError(result.error), 400));
     }
 
-    req.body = result.data;
+    req.body = result.data as unknown;
     return next();
   };
 };
 
-export const validateQuery = <Schema extends ZodTypeAny>(
-  schema: Schema,
+export const validateQuery = <Output, Input>(
+  schema: ZodType<Output, Input>,
 ): RequestHandler => {
   return (req, _res, next) => {
     const result = schema.safeParse(req.query);
@@ -43,8 +43,8 @@ export const validateQuery = <Schema extends ZodTypeAny>(
   };
 };
 
-export const validateParams = <Schema extends ZodTypeAny>(
-  schema: Schema,
+export const validateParams = <Output, Input>(
+  schema: ZodType<Output, Input>,
 ): RequestHandler => {
   return (req, _res, next) => {
     const result = schema.safeParse(req.params);
