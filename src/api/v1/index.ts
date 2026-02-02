@@ -1,5 +1,4 @@
 import { Request, Response, Router } from 'express';
-import exampleRouter from './routes/exampleRoute';
 import pricesRouter from './routes/pricesRoute';
 import authRouter from './routes/authRoute';
 import uploadsRouter from './routes/uploadsRoute';
@@ -12,7 +11,6 @@ router.get('/', (req: Request, res: Response) => {
   });
 });
 
-router.use('/example', exampleRouter);
 router.use('/prices', pricesRouter);
 router.use('/auth', authRouter);
 router.use('/uploads', uploadsRouter);

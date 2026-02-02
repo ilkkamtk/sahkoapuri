@@ -15,7 +15,14 @@ const login = async (
     const { username, password } = req.body;
     const user = await getUserByUsername(username);
 
-    if (!user || !bcrypt.compareSync(password, user.password)) {
+    if (!user) {
+      next(new CustomError('Incorrect username/password', 403));
+      return;
+    }
+
+    const passwordMatches = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatches) {
       next(new CustomError('Incorrect username/password', 403));
       return;
     }
@@ -25,18 +32,19 @@ const login = async (
       return;
     }
 
-    delete (user as { password?: string }).password;
-
     const tokenContent: TokenContent = {
       user_id: user._id.toString(),
     };
 
     const token = jwt.sign(tokenContent, process.env.JWT_SECRET);
 
+    // Create safe user object without password
+    const { password: _, ...safeUser } = user as any;
+
     res.json({
       message: 'Login successful',
       token,
-      user,
+      user: safeUser,
     });
   } catch (error) {
     next(error);

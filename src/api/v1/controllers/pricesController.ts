@@ -2,18 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import UpdateModel from '../models/updateModel';
 import CustomError from '@/classes/CustomError';
 import { MessageResponse } from '@/types/LocalTypes';
-import {
-  PricesPopulateBody,
-  PricesQuery,
-  pricesQuerySchema,
-} from '../schemas/pricesSchemas';
+import { PricesQuery, pricesQuerySchema } from '../schemas/pricesSchemas';
 import * as ExcelJS from 'exceljs';
 import { DateTime } from 'luxon';
 import * as fs from 'fs';
 import * as path from 'path';
 
 const populatePrices = async (
-  req: Request<{}, {}, PricesPopulateBody>,
+  req: Request,
   res: Response<MessageResponse>,
   next: NextFunction,
 ) => {

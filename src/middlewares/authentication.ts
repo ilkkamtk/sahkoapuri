@@ -33,8 +33,6 @@ const authenticate = async (
       process.env.JWT_SECRET,
     ) as TokenContent;
 
-    console.log('userFromToken', userFromToken);
-
     const user = await getUserById(userFromToken.user_id);
 
     if (!user) {
