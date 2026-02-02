@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import { ZodError, type ZodType } from 'zod';
+import { ZodError, type ZodTypeAny } from 'zod';
 import CustomError from '@/classes/CustomError';
 
 const formatZodError = (error: ZodError): string => {
@@ -15,9 +15,7 @@ const formatZodError = (error: ZodError): string => {
   return `Validation error: ${issueMessages.join(', ')}`;
 };
 
-export const validateBody = <Output, Input>(
-  schema: ZodType<Output, Input>,
-): RequestHandler => {
+export const validateBody = (schema: ZodTypeAny): RequestHandler => {
   return (req, _res, next) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
@@ -29,9 +27,7 @@ export const validateBody = <Output, Input>(
   };
 };
 
-export const validateQuery = <Output, Input>(
-  schema: ZodType<Output, Input>,
-): RequestHandler => {
+export const validateQuery = (schema: ZodTypeAny): RequestHandler => {
   return (req, _res, next) => {
     const result = schema.safeParse(req.query);
     if (!result.success) {
@@ -43,9 +39,7 @@ export const validateQuery = <Output, Input>(
   };
 };
 
-export const validateParams = <Output, Input>(
-  schema: ZodType<Output, Input>,
-): RequestHandler => {
+export const validateParams = (schema: ZodTypeAny): RequestHandler => {
   return (req, _res, next) => {
     const result = schema.safeParse(req.params);
     if (!result.success) {

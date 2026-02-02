@@ -1,7 +1,5 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 export interface AiAnalysis {
   consumption: string | null;
   datetime: string | null;
@@ -17,7 +15,10 @@ export interface AiAnalysis {
 export async function inferColumnsWithAI(
   rows: any[],
 ): Promise<AiAnalysis | null> {
-  if (!rows.length || !process.env.OPENAI_API_KEY) return null;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!rows.length || !apiKey) return null;
+
+  const openai = new OpenAI({ apiKey });
 
   const prompt = `Analyze the following data from the first 5 rows of an Excel sheet. Identify the columns for:
 1. Hourly electricity consumption (title might be like "Kokonaissiirto (kWh)" or similar).

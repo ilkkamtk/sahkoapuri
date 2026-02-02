@@ -17,7 +17,8 @@ const populatePrices = async (
     // Check if file has been updated today
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const updateDoc = await UpdateModel.findOne();
+    const filter = { _id: 'prices-updated-at' };
+    const updateDoc = await UpdateModel.findOne(filter);
     const lastUpdated = updateDoc ? new Date(updateDoc.updated) : null;
     lastUpdated?.setHours(0, 0, 0, 0);
 
@@ -42,8 +43,9 @@ const populatePrices = async (
       await fs.promises.writeFile(filePath, Buffer.from(buffer));
 
       // Update the model
+      const filter = { _id: 'prices-updated-at' };
       await UpdateModel.findOneAndUpdate(
-        {},
+        filter,
         { updated: new Date() },
         { upsert: true },
       );
