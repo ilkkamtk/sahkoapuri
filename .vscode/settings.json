@@ -1,0 +1,23 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^cd \"/Volumes/STORAGE2T/Documents/gitProjects/sähköapuri\" && node -e \"const ExcelJS = require\\('exceljs'\\); const wb = new ExcelJS\\.Workbook\\(\\); wb\\.xlsx\\.readFile\\('tests/test\\.xlsx'\\)\\.then\\(\\(\\) => \\{ const ws = wb\\.worksheets\\[0\\]; console\\.log\\('First 10 rows:'\\); let count = 0; ws\\.eachRow\\(\\(row, idx\\) => \\{ if \\(count < 10\\) \\{ console\\.log\\(\\\\`Row \\\\\\$\\{idx\\}: A=\\\\\\$\\{JSON\\.stringify\\(row\\.getCell\\(1\\)\\.value\\)\\}, B=\\\\\\$\\{JSON\\.stringify\\(row\\.getCell\\(2\\)\\.value\\)\\}\\\\`\\); count\\+\\+; \\} \\}\\); \\}\\);\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^node -e \"const ExcelJS = require\\('exceljs'\\); const wb = new ExcelJS\\.Workbook\\(\\); wb\\.xlsx\\.readFile\\('tests/test\\.xlsx'\\)\\.then\\(\\(\\) => \\{ const ws = wb\\.worksheets\\[0\\]; console\\.log\\('First row \\(headers\\):'\\); const firstRow = ws\\.getRow\\(1\\); for\\(let i=1; i<=10; i\\+\\+\\) \\{ console\\.log\\(\\\\`  Col \\\\\\$\\{i\\}: \\\\\\$\\{firstRow\\.getCell\\(i\\)\\.value\\}\\\\`\\); \\} console\\.log\\('\\\\\\\\nSecond row \\(data\\):'\\); const secondRow = ws\\.getRow\\(2\\); for\\(let i=1; i<=10; i\\+\\+\\) \\{ const val = secondRow\\.getCell\\(i\\)\\.value; console\\.log\\(\\\\`  Col \\\\\\$\\{i\\}: \\\\\\$\\{JSON\\.stringify\\(val\\)\\} \\(type: \\\\\\$\\{typeof val\\}\\)\\\\`\\); \\} \\}\\);\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "npm run build": true,
+    "npm test": true,
+    "/^node -e \"const ExcelJS = require\\('exceljs'\\); const wb = new ExcelJS\\.Workbook\\(\\); wb\\.xlsx\\.readFile\\('assets/prices\\.xlsx'\\)\\.then\\(\\(\\) => \\{ const ws = wb\\.worksheets\\[0\\]; console\\.log\\('First 10 price rows \\(starting from row 5\\):'\\); for\\(let i=5; i<15; i\\+\\+\\) \\{ const row = ws\\.getRow\\(i\\); console\\.log\\(\\\\`Row \\\\\\$\\{i\\}: Time=\\\\\\$\\{JSON\\.stringify\\(row\\.getCell\\(1\\)\\.value\\)\\}, Price=\\\\\\$\\{row\\.getCell\\(2\\)\\.value\\}\\\\`\\); \\} \\}\\)\\.catch\\(err => console\\.log\\('No prices file:', err\\.message\\)\\);\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^node -e \"const ExcelJS=require\\('exceljs'\\);const wb=new ExcelJS\\.Workbook\\(\\);wb\\.xlsx\\.readFile\\('tests/check\\.xlsx'\\)\\.then\\(\\(\\)=>\\{const ws=wb\\.worksheets\\[0\\];let sumF=0,countF=0,sumE=0;for\\(let i=5;i<=8764;i\\+\\+\\)\\{const f=ws\\.getRow\\(i\\)\\.getCell\\(6\\)\\.result\\|\\|ws\\.getRow\\(i\\)\\.getCell\\(6\\)\\.value\\|\\|0;const e=ws\\.getRow\\(i\\)\\.getCell\\(5\\)\\.value\\|\\|0;if\\(typeof f==='number'\\)sumF\\+=f,countF\\+\\+;if\\(typeof e==='number'\\)sumE\\+=e;\\}console\\.log\\('SUM\\(F5:F8764\\):',sumF\\);console\\.log\\('COUNT\\(F5:F8764\\):',countF\\);console\\.log\\('SUM\\(E5:E8764\\):',sumE\\);console\\.log\\('AVERAGE\\(F5:F8764\\):',sumF/countF\\);console\\.log\\('SUM\\(F\\)/SUM\\(E\\):',sumF/sumE\\);console\\.log\\('Target avg price: 9\\.757'\\);\\}\\);\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "od": true
+  }
+}
